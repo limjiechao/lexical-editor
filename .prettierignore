@@ -1,0 +1,18 @@
+# NOTE: In general this should be kept in sync with .eslintignore
+
+**/dist/**
+**/build/**
+**/npm/**
+!scripts/npm/**
+**/.output/**
+**/.browser-profiles/**
+!scripts/npm/**
+**/__tests__/integration/fixtures/**
+**/*.md
+**/node_modules
+.github/CODEOWNERS
+.prettierignore
+**/.docusaurus
+/playwright-report
+test-results
+/libdefs/*.cjs

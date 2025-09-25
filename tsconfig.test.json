@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "strict": false
+  },
+  "include": ["."],
+  "exclude": [
+    "./libdefs/*.cjs",
+    "**/dist/**",
+    "**/npm/**",
+    "**/node_modules/**"
+  ],
+  "extends": "./tsconfig.json"
+}

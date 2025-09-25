@@ -1,0 +1,461 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+import {
+  moveToEditorBeginning,
+  moveToLineBeginning,
+  pressBackspace,
+} from '../keyboardShortcuts/index.mjs';
+import {
+  assertHTML,
+  assertSelection,
+  html,
+  initialize,
+  repeat,
+  test,
+} from '../utils/index.mjs';
+
+function testSuite(charset) {
+  test('displays overflow on text', async ({page, isCollab, browserName}) => {
+    test.skip(isCollab);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('12345');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">12345</span>
+        </p>
+      `,
+    );
+
+    await page.keyboard.type('6789');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">12345</span>
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">6789</span>
+          </span>
+        </p>
+      `,
+    );
+    await assertSelection(page, isCollab, {
+      anchorOffset: 4,
+      anchorPath: [0, 1, 0, 0],
+      focusOffset: 4,
+      focusPath: [0, 1, 0, 0],
+    });
+
+    await moveToLineBeginning(page);
+    await page.keyboard.type('0');
+
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">01234</span>
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">5</span>
+          </span>
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">6789</span>
+          </span>
+        </p>
+      `,
+    );
+    await assertSelection(page, isCollab, {
+      anchorOffset: 1,
+      anchorPath: [0, 0, 0],
+      focusOffset: 1,
+      focusPath: [0, 0, 0],
+    });
+  });
+
+  test('handles auto link nodes', async ({page, isCollab, browserName}) => {
+    test.skip(isCollab);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('1234🙂56 www.example.com');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">1234</span>
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">🙂56</span>
+            <a
+              class="PlaygroundEditorTheme__link"
+              href="https://www.example.com">
+              <span data-lexical-text="true">www.example.com</span>
+            </a>
+          </span>
+        </p>
+      `,
+    );
+
+    await pressBackspace(page, 3);
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">1234</span>
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">🙂56 www.example.</span>
+          </span>
+        </p>
+      `,
+    );
+  });
+
+  test('can type new lines inside overflow', async ({
+    page,
+    isRichText,
+    isCollab,
+    browserName,
+  }) => {
+    test.skip(isCollab);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('123456');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('7');
+    if (isRichText) {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">12345</span>
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">6</span>
+            </span>
+          </p>
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">7</span>
+            </span>
+          </p>
+        `,
+      );
+    } else {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">12345</span>
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">6</span>
+              <br />
+              <span data-lexical-text="true">7</span>
+            </span>
+          </p>
+        `,
+      );
+    }
+
+    await pressBackspace(page, 3);
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">12345</span>
+        </p>
+      `,
+    );
+  });
+
+  test('can delete text in front and overflow is recomputed', async ({
+    page,
+    isRichText,
+    isCollab,
+    browserName,
+  }) => {
+    test.skip(isCollab);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('123456');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('7');
+    await moveToEditorBeginning(page, browserName);
+
+    await page.keyboard.press('Delete');
+    if (isRichText) {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">23456</span>
+          </p>
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">7</span>
+            </span>
+          </p>
+        `,
+      );
+    } else {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">23456</span>
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <br />
+              <span data-lexical-text="true">7</span>
+            </span>
+          </p>
+        `,
+      );
+    }
+
+    await page.keyboard.press('Delete');
+    if (isRichText) {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">3456</span>
+          </p>
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">7</span>
+          </p>
+        `,
+      );
+    } else {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">3456</span>
+            <br />
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">7</span>
+            </span>
+          </p>
+        `,
+      );
+    }
+  });
+
+  test('can overflow in lists', async ({
+    page,
+    isCollab,
+    isPlainText,
+    browserName,
+  }) => {
+    test.skip(isCollab || isPlainText);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('- 1234');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('56');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('7');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      '<ul class="PlaygroundEditorTheme__ul" dir="auto"><li value="1" class="PlaygroundEditorTheme__listItem"><span data-lexical-text="true">1234</span></li><li value="2" class="PlaygroundEditorTheme__listItem"><span data-lexical-text="true">5</span><span class="PlaygroundEditorTheme__characterLimit"><span data-lexical-text="true">6</span></span></li><li value="3" class="PlaygroundEditorTheme__listItem"><span class="PlaygroundEditorTheme__characterLimit"><span data-lexical-text="true">7</span></span></li></ul>',
+    );
+
+    await pressBackspace(page, 3);
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      '<ul class="PlaygroundEditorTheme__ul" dir="auto"><li value="1" class="PlaygroundEditorTheme__listItem"><span data-lexical-text="true">1234</span></li><li value="2" class="PlaygroundEditorTheme__listItem"><span data-lexical-text="true">5</span></li></ul>',
+    );
+  });
+
+  test('can delete an overflowed paragraph', async ({
+    page,
+    isCollab,
+    isPlainText,
+    browserName,
+  }) => {
+    test.skip(isCollab || isPlainText);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('12345');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('6');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">12345</span>
+        </p>
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">6</span>
+          </span>
+        </p>
+      `,
+    );
+
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('Backspace');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span data-lexical-text="true">12345</span>
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">6</span>
+          </span>
+        </p>
+      `,
+    );
+  });
+
+  test('handles accented characters', async ({page, isCollab, browserName}) => {
+    test.skip(isCollab);
+    await page.focus('div[contenteditable="true"]');
+
+    // Worth 1 byte in UTF-16, 2 bytes in UTF-8
+    await repeat(6, async () => await page.keyboard.type('à'));
+    if (charset === 'UTF-16') {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">ààààà</span>
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">à</span>
+            </span>
+          </p>
+        `,
+      );
+    } else {
+      await assertHTML(
+        page,
+        isCollab,
+        browserName,
+        html`
+          <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+            <span data-lexical-text="true">àà</span>
+            <span class="PlaygroundEditorTheme__characterLimit">
+              <span data-lexical-text="true">àààà</span>
+            </span>
+          </p>
+        `,
+      );
+    }
+  });
+
+  test('handles graphemes', async ({page, isCollab, browserName}) => {
+    test.skip(isCollab);
+    await page.focus('div[contenteditable="true"]');
+
+    await page.keyboard.type('👨‍👩‍👦‍👦');
+    await assertHTML(
+      page,
+      isCollab,
+      browserName,
+      html`
+        <p class="PlaygroundEditorTheme__paragraph" dir="auto">
+          <span class="PlaygroundEditorTheme__characterLimit">
+            <span data-lexical-text="true">👨‍👩‍👦‍👦</span>
+          </span>
+        </p>
+      `,
+    );
+  });
+}
+
+test.describe('CharacterLimit', () => {
+  test.describe('UTF-16', () => {
+    test.use({isCharLimit: true});
+    test.beforeEach(
+      ({
+        environment,
+        browserName,
+        tableHorizontalScroll,
+        isCollab,
+        isCharLimit,
+        isCharLimitUtf8,
+        isRichText,
+        legacyEvents,
+        page,
+      }) =>
+        initialize({
+          browserName,
+          environment,
+          isCharLimit,
+          isCharLimitUtf8,
+          isCollab,
+          isRichText,
+          legacyEvents,
+          page,
+          tableHorizontalScroll,
+        }),
+    );
+    testSuite('UTF-16');
+  });
+
+  test.describe('UTF-8', () => {
+    test.use({isCharLimitUtf8: true});
+    test.beforeEach(
+      ({
+        environment,
+        browserName,
+        tableHorizontalScroll,
+        isCollab,
+        isCharLimit,
+        isCharLimitUtf8,
+        isRichText,
+        legacyEvents,
+        page,
+      }) =>
+        initialize({
+          browserName,
+          environment,
+          isCharLimit,
+          isCharLimitUtf8,
+          isCollab,
+          isRichText,
+          legacyEvents,
+          page,
+          tableHorizontalScroll,
+        }),
+    );
+    testSuite('UTF-8');
+  });
+});
