@@ -103,7 +103,8 @@ export async function initialize({
   appSettings.disableBeforeInput = legacyEvents;
   appSettings.tableHorizontalScroll = tableHorizontalScroll;
   if (isCollab) {
-    appSettings.isCollab = isCollab;
+    appSettings.isCollab = !!isCollab;
+    appSettings.useCollabV2 = isCollab === 2;
     appSettings.collabId = randomUUID();
   }
   if (showNestedEditorTreeView === undefined) {
@@ -197,6 +198,8 @@ export const test = base.extend({
   isCharLimit: false,
   isCharLimitUtf8: false,
   isCollab: [false, {option: true, scope: 'worker'}],
+  isCollabV1: [false, {option: true, scope: 'worker'}],
+  isCollabV2: [false, {option: true, scope: 'worker'}],
   isMaxLength: false,
   isPlainText: [false, {option: true, scope: 'worker'}],
   isRichText: [true, {option: true, scope: 'worker'}],

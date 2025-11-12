@@ -46,9 +46,11 @@ test.describe('File', () => {
     page,
     isPlainText,
     isCollab,
+    isCollabV2,
     browserName,
   }) => {
-    test.skip(isPlainText);
+    // TODO(collab-v2): nested editors are not supported yet
+    test.skip(isPlainText || isCollabV2);
     await focusEditor(page, isCollab);
     await toggleBold(page);
     await page.keyboard.type('Hello');

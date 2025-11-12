@@ -99,8 +99,9 @@ test.describe.parallel('Selection', () => {
     isPlainText,
     browserName,
     isCollab,
+    isCollabV2,
   }) => {
-    test.skip(isPlainText);
+    test.skip(isPlainText || isCollabV2);
     const hasSelection = async (parentSelector) =>
       await evaluate(
         page,

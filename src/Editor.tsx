@@ -12,7 +12,10 @@ import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import {CharacterLimitPlugin} from '@lexical/react/LexicalCharacterLimitPlugin';
 import {ClearEditorPlugin} from '@lexical/react/LexicalClearEditorPlugin';
 import {ClickableLinkPlugin} from '@lexical/react/LexicalClickableLinkPlugin';
-import {CollaborationPlugin} from '@lexical/react/LexicalCollaborationPlugin';
+import {
+  CollaborationPlugin,
+  CollaborationPluginV2__EXPERIMENTAL,
+} from '@lexical/react/LexicalCollaborationPlugin';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
@@ -25,10 +28,13 @@ import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
 import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {CAN_USE_DOM} from '@lexical/utils';
-import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
+import {Doc} from 'yjs';
 
-import {createWebsocketProvider} from './collaboration';
+import {
+  createWebsocketProvider,
+  createWebsocketProviderWithDoc,
+} from './collaboration';
 import {useSettings} from './context/SettingsContext';
 import {useSharedHistoryContext} from './context/SharedHistoryContext';
 import ActionsPlugin from './plugins/ActionsPlugin';
@@ -61,7 +67,10 @@ import TableHoverActionsPlugin from './plugins/TableHoverActionsPlugin';
 import TableOfContentsPlugin from './plugins/TableOfContentsPlugin';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
+import {VersionsPlugin} from './plugins/VersionsPlugin';
 import ContentEditable from './ui/ContentEditable';
+
+const COLLAB_DOC_ID = 'main';
 
 const skipCollaborationInit =
   // @ts-expect-error
@@ -74,6 +83,7 @@ export default function Editor(): JSX.Element {
       isCodeHighlighted,
       isCodeShiki,
       isCollab,
+      useCollabV2,
       isAutocomplete,
       isMaxLength,
       isCharLimit,
@@ -161,7 +171,7 @@ export default function Editor(): JSX.Element {
         <ComponentPickerPlugin />
         {hasSpeechToText && <SpeechToTextPlugin />}
         <AutoLinkPlugin />
-        {hasComments && (
+        {hasComments && !(isCollab && useCollabV2) && (
           <CommentPlugin
             providerFactory={isCollab ? createWebsocketProvider : undefined}
           />
@@ -169,11 +179,21 @@ export default function Editor(): JSX.Element {
         {isRichText ? (
           <>
             {isCollab ? (
-              <CollaborationPlugin
-                id="main"
-                providerFactory={createWebsocketProvider}
-                shouldBootstrap={!skipCollaborationInit}
-              />
+              useCollabV2 ? (
+                <>
+                  <CollabV2
+                    id={COLLAB_DOC_ID}
+                    shouldBootstrap={!skipCollaborationInit}
+                  />
+                  <VersionsPlugin id={COLLAB_DOC_ID} />
+                </>
+              ) : (
+                <CollaborationPlugin
+                  id={COLLAB_DOC_ID}
+                  providerFactory={createWebsocketProvider}
+                  shouldBootstrap={!skipCollaborationInit}
+                />
+              )
             ) : (
               <HistoryPlugin externalHistoryState={historyState} />
             )}
@@ -257,11 +277,35 @@ export default function Editor(): JSX.Element {
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         {shouldAllowHighlightingWithBrackets && <SpecialTextPlugin />}
         <ActionsPlugin
-          isRichText={isRichText}
           shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
+          useCollabV2={useCollabV2}
         />
       </div>
       {showTreeView && <TreeViewPlugin />}
     </>
+  );
+}
+
+function CollabV2({
+  id,
+  shouldBootstrap,
+}: {
+  id: string;
+  shouldBootstrap: boolean;
+}) {
+  // VersionsPlugin needs GC disabled.
+  const doc = useMemo(() => new Doc({gc: false}), []);
+
+  const provider = useMemo(() => {
+    return createWebsocketProviderWithDoc('main', doc);
+  }, [doc]);
+
+  return (
+    <CollaborationPluginV2__EXPERIMENTAL
+      id={id}
+      doc={doc}
+      provider={provider}
+      __shouldBootstrapUnsafe={shouldBootstrap}
+    />
   );
 }

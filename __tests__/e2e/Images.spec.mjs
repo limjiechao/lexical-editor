@@ -33,16 +33,20 @@ import {
 
 test.describe('Images', () => {
   test.beforeEach(
-    ({
+    async ({
       environment,
       browserName,
       tableHorizontalScroll,
       isCollab,
+      isCollabV2,
       isRichText,
       legacyEvents,
       page,
-    }) =>
-      initialize({
+    }) => {
+      // TODO(collab-v2): nested editors are not supported yet
+      test.skip(isCollabV2);
+
+      await initialize({
         browserName,
         environment,
         isCollab,
@@ -50,7 +54,8 @@ test.describe('Images', () => {
         legacyEvents,
         page,
         tableHorizontalScroll,
-      }),
+      });
+    },
   );
   test(`Can create a decorator and move selection around it`, async ({
     page,

@@ -54,8 +54,15 @@ test.describe('Toolbar', () => {
   test(
     'Insert image caption + table',
     {tag: '@flaky'},
-    async ({page, isPlainText, isCollab, browserName, environment}) => {
-      test.skip(isPlainText);
+    async ({
+      page,
+      isPlainText,
+      isCollab,
+      isCollabV2,
+      browserName,
+      environment,
+    }) => {
+      test.skip(isPlainText || isCollabV2);
       await focusEditor(page, isCollab);
 
       // Add caption

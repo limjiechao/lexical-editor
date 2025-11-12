@@ -48,6 +48,8 @@ test.describe('Collaboration', () => {
     isRichText,
     page,
     isCollab,
+    isCollabV1,
+    isCollabV2,
     browserName,
   }) => {
     test.skip(!isCollab);
@@ -141,12 +143,24 @@ test.describe('Collaboration', () => {
         </p>
       `,
     );
-    await assertSelection(page, isCollab, {
-      anchorOffset: 4,
-      anchorPath: [1, 1, 0],
-      focusOffset: 0,
-      focusPath: [1, 1, 0],
-    });
+
+    if (isCollabV1) {
+      await assertSelection(page, isCollab, {
+        anchorOffset: 4,
+        anchorPath: [1, 1, 0],
+        focusOffset: 0,
+        focusPath: [1, 1, 0],
+      });
+    }
+
+    if (isCollabV2) {
+      await assertSelection(page, {
+        anchorOffset: 1,
+        anchorPath: [0],
+        focusOffset: 1,
+        focusPath: [0],
+      });
+    }
   });
 
   test('Remove dangling text from YJS when there is no preceding text node', async ({
@@ -625,7 +639,10 @@ test.describe('Collaboration', () => {
       .frameLocator('iframe[name="right"]')
       .locator('[data-lexical-editor="true"]')
       .focus();
+    // Wait for the right collaborator to focus on the editor
+    await sleep(1050);
     await page.keyboard.press('Delete');
+
     await assertHTML(
       page,
       isCollab,

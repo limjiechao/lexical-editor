@@ -11,7 +11,6 @@ import type {JSX} from 'react';
 
 import './ImageNode.css';
 
-import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import {useCollaborationContext} from '@lexical/react/LexicalCollaborationContext';
 import {CollaborationPlugin} from '@lexical/react/LexicalCollaborationPlugin';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
@@ -24,11 +23,14 @@ import {useLexicalNodeSelection} from '@lexical/react/useLexicalNodeSelection';
 import {mergeRegister} from '@lexical/utils';
 import {
   $getNodeByKey,
+  $getRoot,
   $getSelection,
   $isNodeSelection,
   $isRangeSelection,
   $setSelection,
+  BLUR_COMMAND,
   CLICK_COMMAND,
+  COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_LOW,
   createCommand,
   DRAGSTART_COMMAND,
@@ -54,7 +56,7 @@ import LinkPlugin from '../plugins/LinkPlugin';
 import TreeViewPlugin from '../plugins/TreeViewPlugin';
 import ContentEditable from '../ui/ContentEditable';
 import ImageResizer from '../ui/ImageResizer';
-import {$isImageNode} from './ImageNode';
+import {$isCaptionEditorEmpty, $isImageNode} from './ImageNode';
 
 type ImageStatus =
   | {error: true}
@@ -64,6 +66,27 @@ const imageCache = new Map<string, Promise<ImageStatus> | ImageStatus>();
 
 export const RIGHT_CLICK_IMAGE_COMMAND: LexicalCommand<MouseEvent> =
   createCommand('RIGHT_CLICK_IMAGE_COMMAND');
+
+function DisableCaptionOnBlur({
+  setShowCaption,
+}: {
+  setShowCaption: (show: boolean) => void;
+}) {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() =>
+    editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        if ($isCaptionEditorEmpty()) {
+          setShowCaption(false);
+        }
+        return false;
+      },
+      COMMAND_PRIORITY_EDITOR,
+    ),
+  );
+  return null;
+}
 
 function useSuspenseImage(src: string): ImageStatus {
   let cached = imageCache.get(src);
@@ -386,11 +409,18 @@ export default function ImageComponent({
     );
   }, [editor, $onEnter, $onEscape, onClick, onRightClick]);
 
-  const setShowCaption = () => {
+  const setShowCaption = (show: boolean) => {
     editor.update(() => {
       const node = $getNodeByKey(nodeKey);
       if ($isImageNode(node)) {
-        node.setShowCaption(true);
+        node.setShowCaption(show);
+        if (show) {
+          node.__caption.update(() => {
+            if (!$getSelection()) {
+              $getRoot().selectEnd();
+            }
+          });
+        }
       }
     });
   };
@@ -450,7 +480,7 @@ export default function ImageComponent({
         {showCaption && (
           <div className="image-caption-container">
             <LexicalNestedComposer initialEditor={caption}>
-              <AutoFocusPlugin />
+              <DisableCaptionOnBlur setShowCaption={setShowCaption} />
               <LinkPlugin />
               {isCollabActive ? (
                 <CollaborationPlugin

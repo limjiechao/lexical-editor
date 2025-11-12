@@ -7823,7 +7823,10 @@ test.describe.parallel('Tables', () => {
       false,
     );
 
-    await sleep(500);
+    // undo is used so we need to wait for history
+    await sleep(1050);
+
+    await sleep(1050);
 
     await withExclusiveClipboardAccess(async () => {
       const clipboard = await copyToClipboard(page, isCollab);
@@ -7943,8 +7946,7 @@ test.describe.parallel('Tables', () => {
       `,
     );
 
-    // undo is used so we need to wait for history
-    await sleep(1050);
+    await undo(page);
 
     await selectCellsFromTableCords(
       page,
