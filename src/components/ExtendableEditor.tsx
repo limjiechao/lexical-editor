@@ -6,6 +6,8 @@
  *
  */
 
+'use client';
+
 import type {NodeContextMenuOption as NodeContextMenuOptionType} from '@lexical/react/LexicalNodeContextMenuPlugin';
 
 import {
@@ -13,6 +15,7 @@ import {
   type SerializedDocument,
   serializedDocumentFromEditorState,
 } from '@lexical/file';
+import {LexicalCollaboration} from '@lexical/react/LexicalCollaborationContext';
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {LexicalExtensionComposer} from '@lexical/react/LexicalExtensionComposer';
 import {OnChangePlugin} from '@lexical/react/LexicalOnChangePlugin';
@@ -34,7 +37,7 @@ import {TableContext} from '../plugins/TablePlugin';
 type FeatureConfig = Partial<Settings>;
 
 export type ToolbarButton = ReactNode;
-export type InsertMenuItem = ReactNode;
+export type InsertDropdownItem = ReactNode;
 export type NodeContextMenuOption = NodeContextMenuOptionType;
 
 export type ExtendableEditorProps = {
@@ -48,8 +51,9 @@ export type ExtendableEditorProps = {
   onChangeDocument?: (doc: SerializedDocument) => void;
   onSaveDocument?: (doc: SerializedDocument) => void;
   toolbarButtons?: ToolbarButton[];
-  insertMenuItems?: InsertMenuItem[];
+  insertDropdownItems?: InsertDropdownItem[];
   contextMenuItems?: NodeContextMenuOption[];
+  children?: ReactNode;
 };
 
 export default function ExtendableEditor({
@@ -63,8 +67,9 @@ export default function ExtendableEditor({
   onChangeDocument,
   onSaveDocument,
   toolbarButtons,
-  insertMenuItems,
+  insertDropdownItems,
   contextMenuItems,
+  children,
 }: ExtendableEditorProps): JSX.Element {
   const extension = useMemo(
     () =>
@@ -92,40 +97,43 @@ export default function ExtendableEditor({
   };
 
   return (
-    <LexicalExtensionComposer extension={extension} contentEditable={null}>
-      <SharedHistoryContext>
-        <TableContext>
-          <ToolbarContext>
-            <div className="editor-shell">
-              <Editor
-                config={mergedFeatures}
-                collabDocId={collabDocId}
-                toolbarButtons={toolbarButtons}
-                insertMenuItems={insertMenuItems}
-                contextMenuItems={contextMenuItems}
-              />
-              {onChangeDocument ? (
-                <OnChangePlugin
-                  onChange={(editorState, _editor) => {
-                    onChangeDocument(
-                      serializedDocumentFromEditorState(editorState, {
-                        source: namespace,
-                      }),
-                    );
-                  }}
+    <LexicalCollaboration>
+      <LexicalExtensionComposer extension={extension} contentEditable={null}>
+        <SharedHistoryContext>
+          <TableContext>
+            <ToolbarContext>
+              <div className="editor-shell">
+                <Editor
+                  config={mergedFeatures}
+                  collabDocId={collabDocId}
+                  toolbarButtons={toolbarButtons}
+                  contextMenuItems={contextMenuItems}
+                  insertDropdownItems={insertDropdownItems}
                 />
-              ) : null}
-              {onSaveDocument ? (
-                <SaveOnShortcutPlugin
-                  onSaveDocument={onSaveDocument}
-                  source={namespace}
-                />
-              ) : null}
-            </div>
-          </ToolbarContext>
-        </TableContext>
-      </SharedHistoryContext>
-    </LexicalExtensionComposer>
+                {onChangeDocument ? (
+                  <OnChangePlugin
+                    onChange={(editorState, _editor) => {
+                      onChangeDocument(
+                        serializedDocumentFromEditorState(editorState, {
+                          source: namespace,
+                        }),
+                      );
+                    }}
+                  />
+                ) : null}
+                {onSaveDocument ? (
+                  <SaveOnShortcutPlugin
+                    onSaveDocument={onSaveDocument}
+                    source={namespace}
+                  />
+                ) : null}
+                {children}
+              </div>
+            </ToolbarContext>
+          </TableContext>
+        </SharedHistoryContext>
+      </LexicalExtensionComposer>
+    </LexicalCollaboration>
   );
 }
 

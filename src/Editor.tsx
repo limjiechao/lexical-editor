@@ -78,13 +78,13 @@ const skipCollaborationInit =
 export default function Editor({
   config,
   toolbarButtons,
-  insertMenuItems,
+  insertDropdownItems,
   contextMenuItems,
   collabDocId,
 }: {
   config?: Partial<Settings>;
   toolbarButtons?: ReactNode[];
-  insertMenuItems?: ReactNode[];
+  insertDropdownItems?: ReactNode[];
   contextMenuItems?: NodeContextMenuOptionType[];
   collabDocId?: string;
 } = {}): JSX.Element {
@@ -168,7 +168,7 @@ export default function Editor({
           setActiveEditor={setActiveEditor}
           setIsLinkEditMode={setIsLinkEditMode}
           extraToolbarButtons={toolbarButtons}
-          extraInsertDropdownItems={insertMenuItems}
+          extraInsertDropdownItems={insertDropdownItems}
         />
       )}
       {isRichText && (
