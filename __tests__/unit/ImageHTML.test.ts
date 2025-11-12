@@ -9,15 +9,11 @@
 import {$insertGeneratedNodes} from '@lexical/clipboard';
 import {$generateHtmlFromNodes} from '@lexical/html';
 import {$selectAll, $setSelection} from 'lexical';
-import {
-  expectHtmlToBeEqual,
-  html,
-  initializeUnitTest,
-} from 'lexical/src/__tests__/utils';
-import {buildHTMLConfig} from 'packages/lexical-playground/src/buildHTMLConfig';
 import {describe, it} from 'vitest';
 
+import {buildHTMLConfig} from '../../src/buildHTMLConfig';
 import {$createImageNode, ImageNode} from '../../src/nodes/ImageNode';
+import {expectHtmlToBeEqual, html, initializeUnitTest} from './utils';
 
 describe('ImageNode HTML serialization', () => {
   initializeUnitTest(

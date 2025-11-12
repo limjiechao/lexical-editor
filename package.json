@@ -1,6 +1,16 @@
 {
   "name": "lexical-editor",
   "private": true,
+  "exports": {
+    "./configurable-editor.tsx": "./src/components/ConfigurableEditor.tsx",
+    "./toolbar-plugin.tsx": "./src/plugins/ToolbarPlugin/index.tsx",
+    "./context-menu-plugin.tsx": "./src/plugins/ContextMenuPlugin/index.tsx",
+    "./toolbar-context.tsx": "./src/context/ToolbarContext.tsx",
+    "./shared-history-context.tsx": "./src/context/SharedHistoryContext.tsx",
+    "./doc-serialization.ts": "./src/utils/docSerialization.ts",
+    "./editor-theme.ts": "./src/themes/PlaygroundEditorTheme.ts",
+    "./nodes.tsx": "./src/nodes/PlaygroundNodes.tsx"
+  },
   "scripts": {
     "start": "concurrently \"npm:collab\" \"npm:dev\"",
     "collab": "cross-env HOST=localhost PORT=1234 npx y-websocket-server",

@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-
-import type {JSX} from 'react';
+import type {JSX, ReactNode} from 'react';
 
 import {
   $isCodeNode,
@@ -64,7 +63,7 @@ import {
   TextFormatType,
   UNDO_COMMAND,
 } from 'lexical';
-import {Dispatch, useCallback, useEffect, useState} from 'react';
+import {Dispatch, Fragment, useCallback, useEffect, useState} from 'react';
 
 import {Settings} from '../../appSettings';
 import {useSettings} from '../../context/SettingsContext';
@@ -545,11 +544,15 @@ export default function ToolbarPlugin({
   activeEditor,
   setActiveEditor,
   setIsLinkEditMode,
+  extraToolbarButtons,
+  extraInsertDropdownItems,
 }: {
   editor: LexicalEditor;
   activeEditor: LexicalEditor;
   setActiveEditor: Dispatch<LexicalEditor>;
   setIsLinkEditMode: Dispatch<boolean>;
+  extraToolbarButtons?: ReactNode[];
+  extraInsertDropdownItems?: ReactNode[];
 }): JSX.Element {
   const [selectedElementKey, setSelectedElementKey] = useState<NodeKey | null>(
     null,
@@ -1271,6 +1274,14 @@ export default function ToolbarPlugin({
                 buttonLabel="Insert"
                 buttonAriaLabel="Insert specialized editor node"
                 buttonIconClassName="icon plus">
+                {Array.isArray(extraInsertDropdownItems) &&
+                extraInsertDropdownItems.length > 0
+                  ? extraInsertDropdownItems.map((node, index) => (
+                      <Fragment key={`extra-insert-dropdown-${index}`}>
+                        {node}
+                      </Fragment>
+                    ))
+                  : null}
                 <DropDownItem
                   onClick={() => {
                     showModal('Insert Table', (onClose) => (
@@ -1345,6 +1356,17 @@ export default function ToolbarPlugin({
               </DropDown>
             </>
           )}
+          {Array.isArray(extraToolbarButtons) &&
+          extraToolbarButtons.length > 0 ? (
+            <>
+              <Divider />
+              {extraToolbarButtons.map((node, index) => (
+                <Fragment key={`extra-toolbar-button-${index}`}>
+                  {node}
+                </Fragment>
+              ))}
+            </>
+          ) : null}
         </>
       )}
 

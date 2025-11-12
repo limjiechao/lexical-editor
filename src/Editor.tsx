@@ -6,7 +6,8 @@
  *
  */
 
-import type {JSX} from 'react';
+import type {Settings} from './appSettings';
+import type {NodeContextMenuOption as NodeContextMenuOptionType} from '@lexical/react/LexicalNodeContextMenuPlugin';
 
 import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
 import {CharacterLimitPlugin} from '@lexical/react/LexicalCharacterLimitPlugin';
@@ -28,7 +29,7 @@ import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
 import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
 import {useLexicalEditable} from '@lexical/react/useLexicalEditable';
 import {CAN_USE_DOM} from '@lexical/utils';
-import {useEffect, useMemo, useState} from 'react';
+import {type JSX, type ReactNode, useEffect, useMemo, useState} from 'react';
 import {Doc} from 'yjs';
 
 import {
@@ -70,42 +71,56 @@ import TreeViewPlugin from './plugins/TreeViewPlugin';
 import {VersionsPlugin} from './plugins/VersionsPlugin';
 import ContentEditable from './ui/ContentEditable';
 
-const COLLAB_DOC_ID = 'main';
-
 const skipCollaborationInit =
   // @ts-expect-error
   window.parent != null && window.parent.frames.right === window;
 
-export default function Editor(): JSX.Element {
+export default function Editor({
+  config,
+  toolbarButtons,
+  insertMenuItems,
+  contextMenuItems,
+  collabDocId,
+}: {
+  config?: Partial<Settings>;
+  toolbarButtons?: ReactNode[];
+  insertMenuItems?: ReactNode[];
+  contextMenuItems?: NodeContextMenuOptionType[];
+  collabDocId?: string;
+} = {}): JSX.Element {
   const {historyState} = useSharedHistoryContext();
+  const settingsContext = useSettings();
   const {
-    settings: {
-      isCodeHighlighted,
-      isCodeShiki,
-      isCollab,
-      useCollabV2,
-      isAutocomplete,
-      isMaxLength,
-      isCharLimit,
-      hasEquations,
-      hasCodeBlocks,
-      hasComments,
-      hasLinkAttributes,
-      hasSpeechToText,
-      isCharLimitUtf8,
-      isRichText,
-      showTreeView,
-      showTableOfContents,
-      shouldUseLexicalContextMenu,
-      shouldPreserveNewLinesInMarkdown,
-      tableCellMerge,
-      tableCellBackgroundColor,
-      tableHorizontalScroll,
-      shouldAllowHighlightingWithBrackets,
-      selectionAlwaysOnDisplay,
-      listStrictIndent,
-    },
-  } = useSettings();
+    isCodeHighlighted,
+    isCodeShiki,
+    isCollab,
+    useCollabV2,
+    isAutocomplete,
+    isMaxLength,
+    isCharLimit,
+    hasEquations,
+    hasCodeBlocks,
+    hasComments,
+    hasLinkAttributes,
+    hasSpeechToText,
+    isCharLimitUtf8,
+    isRichText,
+    showTreeView,
+    showTableOfContents,
+    shouldUseLexicalContextMenu,
+    shouldPreserveNewLinesInMarkdown,
+    tableCellMerge,
+    tableCellBackgroundColor,
+    tableHorizontalScroll,
+    shouldAllowHighlightingWithBrackets,
+    selectionAlwaysOnDisplay,
+    listStrictIndent,
+  } = useMemo(() => {
+    return {
+      ...(settingsContext.settings as Settings),
+      ...(config ?? {}),
+    };
+  }, [config, settingsContext.settings]);
   const isEditable = useLexicalEditable();
   const placeholder = isCollab
     ? 'Enter some collaborative rich text...'
@@ -151,6 +166,8 @@ export default function Editor(): JSX.Element {
           activeEditor={activeEditor}
           setActiveEditor={setActiveEditor}
           setIsLinkEditMode={setIsLinkEditMode}
+          extraToolbarButtons={toolbarButtons}
+          extraInsertDropdownItems={insertMenuItems}
         />
       )}
       {isRichText && (
@@ -182,14 +199,14 @@ export default function Editor(): JSX.Element {
               useCollabV2 ? (
                 <>
                   <CollabV2
-                    id={COLLAB_DOC_ID}
+                    id={collabDocId ?? 'main'}
                     shouldBootstrap={!skipCollaborationInit}
                   />
-                  <VersionsPlugin id={COLLAB_DOC_ID} />
+                  <VersionsPlugin id={collabDocId ?? 'main'} />
                 </>
               ) : (
                 <CollaborationPlugin
-                  id={COLLAB_DOC_ID}
+                  id={collabDocId ?? 'main'}
                   providerFactory={createWebsocketProvider}
                   shouldBootstrap={!skipCollaborationInit}
                 />
@@ -275,6 +292,9 @@ export default function Editor(): JSX.Element {
         {isAutocomplete && <AutocompletePlugin />}
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
+        {shouldUseLexicalContextMenu ? (
+          <ContextMenuPlugin items={contextMenuItems} />
+        ) : null}
         {shouldAllowHighlightingWithBrackets && <SpecialTextPlugin />}
         <ActionsPlugin
           shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
@@ -297,8 +317,8 @@ function CollabV2({
   const doc = useMemo(() => new Doc({gc: false}), []);
 
   const provider = useMemo(() => {
-    return createWebsocketProviderWithDoc('main', doc);
-  }, [doc]);
+    return createWebsocketProviderWithDoc(id, doc);
+  }, [doc, id]);
 
   return (
     <CollaborationPluginV2__EXPERIMENTAL

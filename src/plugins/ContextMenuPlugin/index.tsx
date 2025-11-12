@@ -27,11 +27,15 @@ import {
 } from 'lexical';
 import {useMemo} from 'react';
 
-export default function ContextMenuPlugin(): JSX.Element {
+export default function ContextMenuPlugin({
+  items: extraItems,
+}: {
+  items?: Array<NodeContextMenuOption | NodeContextMenuSeparator>;
+} = {}): JSX.Element {
   const [editor] = useLexicalComposerContext();
 
   const items = useMemo(() => {
-    return [
+    const base = [
       new NodeContextMenuOption(`Remove Link`, {
         $onSelect: () => {
           editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
@@ -145,7 +149,9 @@ export default function ContextMenuPlugin(): JSX.Element {
         ),
       }),
     ];
-  }, [editor]);
+    const extras = Array.isArray(extraItems) ? extraItems : [];
+    return [...base, ...extras];
+  }, [editor, extraItems]);
 
   return (
     <NodeContextMenuPlugin
