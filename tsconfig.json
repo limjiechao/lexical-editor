@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2019",
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": ["esnext", "dom", "dom.iterable", "ESNext.Disposable"],
     "module": "esnext",
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
@@ -22,5 +22,13 @@
     "**/npm/**",
     "**/node_modules/**"
   ],
-  "ts-node": {"require": [], "transpileOnly": true}
+  "ts-node": {
+    "require": [],
+    "transpileOnly": true,
+    "esm": false,
+    "compilerOptions": {
+      "module": "nodenext",
+      "moduleResolution": "nodenext"
+    }
+  }
 }

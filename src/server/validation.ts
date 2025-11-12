@@ -6,6 +6,11 @@
  *
  */
 
+// Ignore non-JS assets when running in Node.js
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(require as any).extensions['.css'] = () => undefined;
+
+/* eslint-disable import/first */
 import {createHeadlessEditor} from '@lexical/headless';
 import {$isMarkNode, $unwrapMarkNode} from '@lexical/mark';
 import * as http from 'http';
