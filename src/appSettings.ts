@@ -34,6 +34,7 @@ export const DEFAULT_SETTINGS = {
   selectionAlwaysOnDisplay: false,
   shouldAllowHighlightingWithBrackets: false,
   shouldPreserveNewLinesInMarkdown: false,
+  shouldShowActions: false,
   shouldUseLexicalContextMenu: false,
   showNestedEditorTreeView: false,
   showTableOfContents: false,

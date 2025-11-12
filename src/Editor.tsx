@@ -107,8 +107,9 @@ export default function Editor({
     isRichText,
     showTreeView,
     showTableOfContents,
-    shouldUseLexicalContextMenu,
     shouldPreserveNewLinesInMarkdown,
+    shouldShowActions,
+    shouldUseLexicalContextMenu,
     tableCellMerge,
     tableCellBackgroundColor,
     tableHorizontalScroll,
@@ -296,10 +297,12 @@ export default function Editor({
           <ContextMenuPlugin items={contextMenuItems} />
         ) : null}
         {shouldAllowHighlightingWithBrackets && <SpecialTextPlugin />}
-        <ActionsPlugin
-          shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
-          useCollabV2={useCollabV2}
-        />
+        {shouldShowActions && (
+          <ActionsPlugin
+            shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
+            useCollabV2={useCollabV2}
+          />
+        )}
       </div>
       {showTreeView && <TreeViewPlugin />}
     </>

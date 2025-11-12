@@ -39,6 +39,7 @@ export default function Settings(): JSX.Element {
       showTableOfContents,
       shouldUseLexicalContextMenu,
       shouldPreserveNewLinesInMarkdown,
+      shouldShowActions,
       shouldAllowHighlightingWithBrackets,
       // tableHorizontalScroll,
       selectionAlwaysOnDisplay,
@@ -118,6 +119,13 @@ export default function Settings(): JSX.Element {
             }}
             checked={isRichText}
             text="Rich Text"
+          />
+          <Switch
+            onClick={() => {
+              setOption('shouldShowActions', !shouldShowActions);
+            }}
+            checked={shouldShowActions}
+            text="Show Actions"
           />
           <Switch
             onClick={() => setOption('isCharLimit', !isCharLimit)}
@@ -221,7 +229,6 @@ export default function Settings(): JSX.Element {
             checked={shouldAllowHighlightingWithBrackets}
             text="Use Brackets for Highlighting"
           />
-
           <Switch
             onClick={() => {
               setOption('selectionAlwaysOnDisplay', !selectionAlwaysOnDisplay);
@@ -229,7 +236,6 @@ export default function Settings(): JSX.Element {
             checked={selectionAlwaysOnDisplay}
             text="Retain selection"
           />
-
           <Switch
             onClick={() => {
               setOption('isCodeHighlighted', !isCodeHighlighted);
