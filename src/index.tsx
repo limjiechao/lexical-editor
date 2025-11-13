@@ -10,6 +10,7 @@
 // at import time (disableBeforeInput is used to test legacy events)
 // eslint-disable-next-line simple-import-sort/imports
 import setupEnv from './setupEnv';
+import './playground.css';
 import './index.css';
 
 import * as React from 'react';
