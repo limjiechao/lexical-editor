@@ -32,7 +32,7 @@
     "eslint-fix": "eslint ./ --fix",
     "prettier-check": "prettier --list-different .",
     "prettier-fix": "prettier --write .",
-    "type-check": "tsc",
+    "type-check": "tsc --noEmit",
     "build-library-js": "tsdown --config tsdown.config.library.mts",
     "build-library-css": "node lightningcss.library.mjs",
     "build-library": "npm-run-all build-library-js build-library-css",

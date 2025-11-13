@@ -28,6 +28,8 @@ const config = {
       2,
       'always',
       [
+        // Changes that do not fall into any other categories
+        'chore',
         // Changes that affect the build system or dependency-only changes
         'build',
         // Changes to CI workflows
