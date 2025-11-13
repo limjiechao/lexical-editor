@@ -3,17 +3,21 @@
   "description": "A custom fork of '@lexical/monorepo' internal package 'lexical-playground'.",
   "version": "0.0.0",
   "exports": {
+    ".": {
+      "import": "./dist/library/ExtendableEditor.mjs",
+      "types": "./dist/library/ExtendableEditor.d.mts"
+    },
     "./extendable-editor": {
       "import": "./dist/library/ExtendableEditor.mjs",
-      "type": "./dist/library/ExtendableEditor.d.mts"
+      "types": "./dist/library/ExtendableEditor.d.mts"
     },
     "./editor-nodes": {
       "import": "./dist/nodes/PlaygroundNodes.mjs",
-      "type": "./dist/nodes/PlaygroundNodes.d.mts"
+      "types": "./dist/nodes/PlaygroundNodes.d.mts"
     },
     "./editor-theme": {
       "import": "./dist/themes/PlaygroundEditorTheme.mjs",
-      "type": "./dist/themes/PlaygroundEditorTheme.d.mts"
+      "types": "./dist/themes/PlaygroundEditorTheme.d.mts"
     },
     "./extendable-editor.css": "./dist/library/main.css"
   },
