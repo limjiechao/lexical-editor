@@ -32,8 +32,8 @@
   position: fixed;
   top: 0;
   right: 0px;
-  padding: 0 8px 0 0;
-  width: 200px;
+  padding: 0 10px 0 0;
+  width: 196px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
