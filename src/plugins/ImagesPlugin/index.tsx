@@ -6,6 +6,8 @@
  *
  */
 
+import type {Settings} from '../../appSettings';
+import type {ImagePayload} from '../../nodes/ImageNode';
 import type {JSX} from 'react';
 
 import {
@@ -43,15 +45,9 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import * as React from 'react';
 
-import {Settings} from '../../appSettings';
 import landscapeImage from '../../images/landscape.jpg';
 import yellowFlowerImage from '../../images/yellow-flower.jpg';
-import {
-  $createImageNode,
-  $isImageNode,
-  ImageNode,
-  ImagePayload,
-} from '../../nodes/ImageNode';
+import {$createImageNode, $isImageNode, ImageNode} from '../../nodes/ImageNode';
 import Button from '../../ui/Button';
 import {DialogActions, DialogButtonsList} from '../../ui/Dialog';
 import FileInput from '../../ui/FileInput';

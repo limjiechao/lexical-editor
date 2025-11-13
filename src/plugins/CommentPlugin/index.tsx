@@ -6,6 +6,7 @@
  *
  */
 
+import type {Comment, Comments, Thread} from '../../commenting';
 import type {Provider} from '@lexical/yjs';
 import type {
   EditorState,
@@ -65,12 +66,9 @@ import * as React from 'react';
 import {createPortal} from 'react-dom';
 
 import {
-  Comment,
-  Comments,
   CommentStore,
   createComment,
   createThread,
-  Thread,
   useCommentStore,
 } from '../../commenting';
 import useModal from '../../hooks/useModal';

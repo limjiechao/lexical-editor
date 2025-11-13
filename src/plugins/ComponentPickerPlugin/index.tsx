@@ -6,6 +6,7 @@
  *
  */
 
+import type {Settings} from '../../appSettings';
 import type {JSX} from 'react';
 
 import {$createCodeNode} from '@lexical/code';
@@ -34,7 +35,6 @@ import {
 import {useCallback, useMemo, useState} from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {Settings} from '../../appSettings';
 import {useSettings} from '../../context/SettingsContext';
 import useModal from '../../hooks/useModal';
 import {InsertEquationDialog} from '../EquationsPlugin';

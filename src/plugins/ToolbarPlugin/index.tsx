@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+import type {Settings} from '../../appSettings';
 import type {JSX, ReactNode} from 'react';
 
 import {
@@ -65,7 +66,6 @@ import {
 } from 'lexical';
 import {Dispatch, Fragment, useCallback, useEffect, useState} from 'react';
 
-import {Settings} from '../../appSettings';
 import {useSettings} from '../../context/SettingsContext';
 import {
   blockTypeToBlockName,

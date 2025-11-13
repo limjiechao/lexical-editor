@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-
+import type {Settings} from '../../appSettings';
 import type {JSX} from 'react';
 
 import './index.css';
@@ -29,7 +29,6 @@ import {Dispatch, useCallback, useEffect, useRef, useState} from 'react';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
 
-import {Settings} from '../../appSettings';
 import {useSettings} from '../../context/SettingsContext';
 import {getDOMRangeRect} from '../../utils/getDOMRangeRect';
 import {getSelectedNode} from '../../utils/getSelectedNode';
