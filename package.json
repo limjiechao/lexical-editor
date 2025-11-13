@@ -26,6 +26,7 @@
     "dev-playground": "vite --host --port 3001",
     "validation": "npx ts-node --cwdMode src/server/validation.ts",
     "prepare": "husky",
+    "prepublishOnly": "npm run build-library",
     "semantic-release": "semantic-release",
     "check": "npm-run-all --parallel type-check prettier-check eslint-check",
     "eslint-check": "eslint ./",
