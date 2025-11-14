@@ -291,7 +291,6 @@ export default function Editor({
           />
         )}
         {isAutocomplete && <AutocompletePlugin />}
-        <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
         {shouldUseLexicalContextMenu ? (
           <ContextMenuPlugin items={contextMenuItems} />
@@ -305,6 +304,7 @@ export default function Editor({
         )}
       </div>
       {showTreeView && <TreeViewPlugin />}
+      {showTableOfContents && <TableOfContentsPlugin />}
     </>
   );
 }
