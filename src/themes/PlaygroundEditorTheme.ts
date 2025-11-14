@@ -71,8 +71,6 @@ const theme: EditorThemeClasses = {
   list: {
     checklist: 'PlaygroundEditorTheme__checklist',
     listitem: 'PlaygroundEditorTheme__listItem',
-    listitemChecked: 'PlaygroundEditorTheme__listItemChecked',
-    listitemUnchecked: 'PlaygroundEditorTheme__listItemUnchecked',
     nested: {
       listitem: 'PlaygroundEditorTheme__nestedListItem',
     },
