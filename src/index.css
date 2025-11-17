@@ -168,6 +168,7 @@
 
 :root {
   --header-height: 88px;
+  --toolbar-height: 36px;
   --side-panel-z-index: 6;
   --side-panel-background-color: rgba(238, 238, 238, 0.5);
   --comments-button-z-index: 7;
@@ -1353,7 +1354,7 @@ button.action-button:disabled {
   border-top-right-radius: 10px;
   vertical-align: middle;
   overflow: auto;
-  height: 36px;
+  height: var(--toolbar-height);
   position: sticky;
   top: 0;
   z-index: 2;
