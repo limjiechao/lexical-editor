@@ -11,7 +11,6 @@
 // eslint-disable-next-line simple-import-sort/imports
 import setupEnv from './setupEnv';
 import './playground.css';
-import './index.css';
 
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';

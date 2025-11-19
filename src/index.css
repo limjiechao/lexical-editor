@@ -5,11 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+@layer editor;
+
+:root {
+  --toolbar-height: 36px;
+  --table-of-contents-width: 196px;
+  --side-panel-z-index: 6;
+  --side-panel-background-color: rgba(238, 238, 238, 0.5);
+  --comments-button-z-index: 7;
+  --buttom-button-group-z-index: 7;
+  --bottom-button-group-height: 60px;
+  --bottom-button-spacing: 10px;
+  --bottom-button-size: 40px;
+}
 
 .editor-shell {
-  margin: 20px auto;
   border-radius: 2px;
-  max-width: 1100px;
   color: #000;
   position: relative;
   line-height: 1.7;
@@ -20,22 +31,9 @@
   background: #fff;
   position: relative;
   display: block;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.editor-shell .editor-container.tree-view {
-  border-radius: 0;
-}
-
-.editor-shell .editor-container.plain-text {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
 }
 
 .editor-scroller {
-  min-height: 150px;
-  max-width: 100%;
   border: 0;
   display: flex;
   position: relative;
@@ -66,8 +64,6 @@
   margin: 1px auto 10px auto;
   position: relative;
   overflow: hidden;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
 }
 
 .tree-view-output > pre,
@@ -164,18 +160,6 @@
   display: block;
   background-size: contain;
   filter: invert(1);
-}
-
-:root {
-  --header-height: 88px;
-  --toolbar-height: 36px;
-  --side-panel-z-index: 6;
-  --side-panel-background-color: rgba(238, 238, 238, 0.5);
-  --comments-button-z-index: 7;
-  --buttom-button-group-z-index: 7;
-  --bottom-button-group-height: 60px;
-  --bottom-button-spacing: 10px;
-  --bottom-button-size: 40px;
 }
 
 #options-button {
@@ -1350,8 +1334,6 @@ button.action-button:disabled {
   margin-bottom: 1px;
   background: #fff;
   padding: 4px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   vertical-align: middle;
   overflow: auto;
   height: var(--toolbar-height);
