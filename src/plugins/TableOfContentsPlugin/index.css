@@ -33,7 +33,7 @@
   top: 0;
   right: 0px;
   padding: 0 10px 0 0;
-  width: 196px;
+  width: var(--table-of-contents-width);
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -52,15 +52,16 @@
 }
 
 .headings {
+  --headings-top-padding: var(--header-height);
+  --headings-bottom-padding: var(--bottom-button-group-height);
   --headings-height: calc(
-    100svh - var(--header-height) - var(--bottom-button-group-height)
+    100svh - var(--headings-top-padding) - var(--headings-bottom-padding)
   );
   list-style: none;
   margin-top: 0;
   margin-left: 0;
-  padding: var(--header-height) 0 60px 0;
+  padding: var(--headings-top-padding) 0 var(--headings-bottom-padding) 0;
   overflow: scroll;
-  width: 250px;
   height: var(--headings-height);
   overflow-x: hidden;
   overflow-y: auto;

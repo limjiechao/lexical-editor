@@ -9,6 +9,9 @@
 @layer editor, playground;
 
 @layer playground {
+  :root {
+    --header-height: 88px;
+  }
   body {
     margin: 0;
     font-family:
