@@ -45,6 +45,7 @@ const DEFAULT_EXTENDABLE_EDITOR_SETTINGS: Settings = {
   hasSampleImage: false,
   shouldShowActions: false,
   shouldUseLexicalContextMenu: true,
+  showTreeView: false,
 };
 
 type FeatureConfig = Partial<Settings>;
