@@ -72,6 +72,7 @@ import {
   useToolbarState,
 } from '../../context/ToolbarContext';
 import useModal from '../../hooks/useModal';
+import {INSERT_FOOTNOTE_COMMAND} from '../../nodes/FootnoteNode';
 import DropDown, {DropDownItem} from '../../ui/DropDown';
 import DropdownColorPicker from '../../ui/DropdownColorPicker';
 import {isKeyboardInput} from '../../utils/focusUtils';
@@ -1309,7 +1310,16 @@ export default function ToolbarPlugin({
                   <i className="icon image" />
                   <span className="text">Image</span>
                 </DropDownItem>
-
+                <DropDownItem
+                  className="item"
+                  onClick={() => {
+                    editor.dispatchCommand(INSERT_FOOTNOTE_COMMAND, {
+                      value: '',
+                    });
+                  }}>
+                  <i className="icon footnote" />
+                  <span className="text">Footnote</span>
+                </DropDownItem>
                 {hasEquations && (
                   <DropDownItem
                     onClick={() => {

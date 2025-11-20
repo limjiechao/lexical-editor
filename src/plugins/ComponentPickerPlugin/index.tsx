@@ -37,6 +37,7 @@ import * as ReactDOM from 'react-dom';
 
 import {useSettings} from '../../context/SettingsContext';
 import useModal from '../../hooks/useModal';
+import {INSERT_FOOTNOTE_COMMAND} from '../../nodes/FootnoteNode';
 import {InsertEquationDialog} from '../EquationsPlugin';
 import {InsertImageDialog} from '../ImagesPlugin';
 import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
@@ -246,6 +247,13 @@ function getBaseOptions(
             settings={{hasSampleImage: settings.hasSampleImage}}
           />
         )),
+    }),
+    new ComponentPickerOption('Footnote', {
+      icon: <i className="icon footnote" />,
+      keywords: ['footnote', 'note', 'footnote text'],
+      onSelect: () => {
+        editor.dispatchCommand(INSERT_FOOTNOTE_COMMAND, {value: ''});
+      },
     }),
     new ComponentPickerOption('Divider', {
       icon: <i className="icon horizontal-rule" />,

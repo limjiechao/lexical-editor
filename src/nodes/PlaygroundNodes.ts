@@ -19,6 +19,7 @@ import {TableCellNode, TableNode, TableRowNode} from '@lexical/table';
 
 import {AutocompleteNode} from './AutocompleteNode';
 import {EquationNode} from './EquationNode';
+import {FootnoteNode} from './FootnoteNode';
 import {ImageNode} from './ImageNode';
 import {LayoutContainerNode} from './LayoutContainerNode';
 import {LayoutItemNode} from './LayoutItemNode';
@@ -47,6 +48,7 @@ const PlaygroundNodes: ReadonlyArray<Klass<LexicalNode>> = [
   LayoutContainerNode,
   LayoutItemNode,
   SpecialTextNode,
+  FootnoteNode,
 ] as const;
 
 export default PlaygroundNodes;

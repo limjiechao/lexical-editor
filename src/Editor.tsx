@@ -52,6 +52,7 @@ import DraggableBlockPlugin from './plugins/DraggableBlockPlugin';
 import EquationsPlugin from './plugins/EquationsPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 import FloatingTextFormatToolbarPlugin from './plugins/FloatingTextFormatToolbarPlugin';
+import FootnotePlugin from './plugins/FootnotePlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import {LayoutPlugin} from './plugins/LayoutPlugin/LayoutPlugin';
 import LinkPlugin from './plugins/LinkPlugin';
@@ -250,6 +251,7 @@ export default function Editor({
             <TabIndentationPlugin maxIndent={7} />
             <PageBreakPlugin />
             <LayoutPlugin />
+            <FootnotePlugin />
             {floatingAnchorElem && (
               <>
                 <FloatingLinkEditorPlugin

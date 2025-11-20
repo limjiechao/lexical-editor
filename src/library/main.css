@@ -4,6 +4,7 @@
 @import '../themes/CommentEditorTheme.css';
 @import '../themes/PlaygroundEditorTheme.css';
 @import '../themes/StickyEditorTheme.css';
+@import '../nodes/FootnoteNode.css';
 @import '../nodes/ImageNode.css';
 @import '../nodes/PageBreakNode/index.css';
 @import '../ui/Button.css';
@@ -22,6 +23,7 @@
 @import '../plugins/DraggableBlockPlugin/index.css';
 @import '../plugins/FloatingLinkEditorPlugin/index.css';
 @import '../plugins/FloatingTextFormatToolbarPlugin/index.css';
+@import '../plugins/FootnotePlugin/index.css';
 @import '../plugins/TableCellResizer/index.css';
 @import '../plugins/TableOfContentsPlugin/index.css';
 @import '../plugins/ToolbarPlugin/fontSize.css';
