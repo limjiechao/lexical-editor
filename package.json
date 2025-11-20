@@ -19,10 +19,12 @@
       "import": "./dist/themes/PlaygroundEditorTheme.mjs",
       "types": "./dist/themes/PlaygroundEditorTheme.d.mts"
     },
-    "./extendable-editor.css": "./dist/library/main.css"
+    "./extendable-editor.css": "./dist/library/main.css",
+    "./lexical-schema": "./types/LexicalSchema.d.ts"
   },
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "scripts": {
     "start-playground": "concurrently \"npm:collab-playground\" \"npm:dev-playground\"",

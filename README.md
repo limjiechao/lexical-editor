@@ -48,3 +48,9 @@ Notes:
 - The component merges your `features` with sensible defaults; pass a partial config via the `features` prop only if you need overrides.
 - Use `onChangeDocument` to keep external state in sync, and `onSaveDocument` to persist via Cmd/Ctrl+S.
 - You can provide your own nodes array and theme to fully customize behavior and appearance.
+
+## Using the serialized schema (Lexical JSON)
+
+- For building strongly-typed `editorState` JSON, see the standalone schema in `types/LexicalSchema.d.ts`.
+- Usage guide: [types/README.md](./types/README.md)
+- Import path for consumers: `extendable-lexical-editor/lexical-schema`

@@ -51,14 +51,32 @@ export type TextModeType = 'normal' | 'token' | 'segmented';
  * Minimal NodeState record shape used for JSON-serializable ad-hoc state.
  * See: https://lexical.dev/docs/concepts/node-state
  *
- * NOTE: This is where we define the metadata to be persisted.
+ * Override mechanism:
+ * - Consumers can augment the exported `CustomNodeState` interface via module augmentation
+ *   to provide a project-specific shape for the `$` NodeState payload.
+ *
+ * Example:
+ *   declare module 'extendable-lexical-editor/lexical-schema' {
+ *     interface CustomNodeState {
+ *       metadata: { source: 'ai' | 'user' };
+ *     }
+ *   }
+ *
+ * `NodeStateRecord` will fall back to a generic record if `CustomNodeState` is not augmented.
  */
-export type NodeStateRecord = {
-  [key: string]: unknown;
-};
+export interface CustomNodeState {}
+
+type IsEmptyObject<T> = keyof T extends never ? true : false;
+
+export type NodeStateRecord =
+  IsEmptyObject<CustomNodeState> extends true
+    ? {[key: string]: unknown}
+    : CustomNodeState;
 
 /**
  * The minimal base shape for any serialized node.
+ *
+ * Optional `$` NodeState uses `NodeStateRecord`, which can be augmented via `CustomNodeState`.
  */
 export interface SerializedLexicalNode {
   type: string;
