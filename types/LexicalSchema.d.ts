@@ -7,7 +7,7 @@
  */
 
 /**
- * Standalone serialized schema for nodes registered in `PlaygroundNodes`.
+ * Standalone serialized schema for nodes registered in PlaygroundNodes.ts.
  *
  * Source:
  * From "extendable-lexical-editor" NPM Package
@@ -25,7 +25,7 @@
  * - Decorator-like nodes have no `children` (rendered externally).
  * - Some nodes add their own properties (documented per node).
  *
- * This file intentionally models only the nodes listed in `PlaygroundNodes`.
+ * This file intentionally models only the nodes listed in PlaygroundNodes.ts.
  */
 
 /* =========================================
@@ -125,9 +125,9 @@ export interface SerializedEditor {
   };
 }
 
-/* =========================================
- * Third-party/builtin nodes in PlaygroundNodes
- * ========================================= */
+/* ===============================================
+ * Third-party/builtin nodes in PlaygroundNodes.ts
+ * =============================================== */
 
 // @lexical/rich-text
 // NOTE: Block heading element (h1–h6).
@@ -263,7 +263,7 @@ export interface SerializedTableCellNode extends SerializedElementNode {
 }
 
 /* =========================================
- * Custom nodes in PlaygroundNodes
+ * Custom nodes in PlaygroundNodes.ts
  * ========================================= */
 
 // SpecialTextNode (TextEntity)
@@ -339,7 +339,7 @@ export interface SerializedLayoutItemNode extends SerializedElementNode {
  * Union helpers for convenience
  * ========================================= */
 
-export type PlaygroundNodeTypeString =
+export type LexicalEditorNodeType =
   | 'heading'
   | 'paragraph'
   | 'list'
@@ -364,7 +364,7 @@ export type PlaygroundNodeTypeString =
   | 'specialText'
   | 'footnote';
 
-export type SerializedPlaygroundNode =
+export type SerializedLexicalEditorNode =
   | SerializedHeadingNode
   | SerializedParagraphNode
   | SerializedListNode
@@ -391,18 +391,18 @@ export type SerializedPlaygroundNode =
 
 /**
  * Optional convenience: a minimal document root shape that can host any of the nodes above.
- * This is not part of PlaygroundNodes but included to help consumers assemble complete documents.
+ * This is not part of PlaygroundNodes.ts but included to help consumers assemble complete documents.
  */
 export interface SerializedRootNode
-  extends SerializedElementNode<SerializedPlaygroundNode | SerializedTextNode> {
+  extends SerializedElementNode<SerializedLexicalEditorNode> {
   type: 'root';
   version: 1;
 }
 
 /**
- * Full saved file shape as exported by the Playground.
+ * Full saved document shape as exported by the "extendable-lexical-editor".
  */
-export interface SerializedPlaygroundFile {
+export interface SerializedLexicalDocument {
   editorState: {
     root: SerializedRootNode;
   };
